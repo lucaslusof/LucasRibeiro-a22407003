@@ -32,8 +32,8 @@ class ProjetoAdmin(admin.ModelAdmin):
 
 @admin.register(TFC)
 class TFCAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'ano', 'destaque']
-    list_filter = ['ano', 'destaque']
+    list_display = ['titulo', 'ano']
+    list_filter = ['ano']
     search_fields = ['titulo']
     filter_horizontal = ['tecnologias']
 

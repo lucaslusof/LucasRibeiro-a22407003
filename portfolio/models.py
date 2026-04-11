@@ -15,7 +15,7 @@ class Docente(models.Model):
     email = models.EmailField(blank=True)
     url_lusofona = models.URLField(blank=True)
     foto = models.ImageField(upload_to='docentes/', blank=True) 
-    
+
     def __str__(self):
         return self.nome
 
@@ -70,7 +70,6 @@ class TFC(models.Model):
     resumo = models.TextField()
     ano = models.IntegerField()
     link_documento = models.URLField()
-    destaque = models.BooleanField(default=False)
     tecnologias = models.ManyToManyField(Tecnologia, related_name='tfcs', blank=True)
 
     def __str__(self):
