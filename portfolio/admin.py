@@ -12,7 +12,7 @@ class DocenteAdmin(admin.ModelAdmin):
     search_fields = ['nome', 'email']
 
 @admin.register(UnidadeCurricular)
-class UCAdmin(admin.ModelAdmin):
+class UCAdmin(admin.ModelAgitdmin):
     list_display = ['sigla', 'nome', 'ano', 'semestre', 'ects', 'course_code']
     list_filter = ['ano', 'semestre']
     search_fields = ['nome', 'sigla', 'course_code', 'curricular_unit_code']
