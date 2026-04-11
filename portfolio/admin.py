@@ -13,11 +13,11 @@ class DocenteAdmin(admin.ModelAdmin):
 
 @admin.register(UnidadeCurricular)
 class UCAdmin(admin.ModelAdmin):
-    list_display = ['sigla', 'nome', 'ano', 'semestre', 'ects']
+    list_display = ['sigla', 'nome', 'ano', 'semestre', 'ects', 'course_code']
     list_filter = ['ano', 'semestre']
-    search_fields = ['nome', 'sigla']
+    search_fields = ['nome', 'sigla', 'course_code', 'curricular_unit_code']
     filter_horizontal = ['docentes']
-
+    
 @admin.register(Tecnologia)
 class TecnologiaAdmin(admin.ModelAdmin):
     list_display = ['nome', 'nivel_interesse']

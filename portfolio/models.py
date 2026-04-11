@@ -27,9 +27,16 @@ class UnidadeCurricular(models.Model):
     ano = models.IntegerField()
     semestre = models.IntegerField()
     ects = models.IntegerField(default=6)
-    descricao = models.TextField(blank=True)
     imagem = models.ImageField(upload_to='ucs/', blank=True)
     url_programa = models.URLField(blank=True)
+    course_code = models.CharField(max_length=20, blank=True)
+    curricular_unit_code = models.CharField(max_length=20, blank=True)
+    bibliografia = models.TextField(blank=True)
+    metodologia = models.TextField(blank=True)
+    objetivos = models.TextField(blank=True)
+    programa = models.TextField(blank=True)
+    apresentacao = models.TextField(blank=True)
+    avaliacao = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.sigla} - {self.nome}"
