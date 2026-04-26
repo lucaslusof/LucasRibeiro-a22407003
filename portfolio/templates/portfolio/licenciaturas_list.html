@@ -1,0 +1,33 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}Licenciaturas{% endblock %}
+{% block nav_lic %}active{% endblock %}
+{% block breadcrumb %}<b>/ licenciaturas</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// académico</div>
+        <div class="page-title">Licenciaturas</div>
+    </div>
+    <a href="/licenciaturas/nova/" class="btn btn-primary">+ Nova Licenciatura</a>
+</div>
+<div class="card">
+    <table>
+        <thead><tr><th>Nome</th><th>Sigla</th><th>Site</th><th>Ações</th></tr></thead>
+        <tbody>
+        {% for l in licenciaturas %}
+            <tr>
+                <td class="text-dark">{{ l.nome }}</td>
+                <td><span class="badge badge-purple">{{ l.sigla }}</span></td>
+                <td>{% if l.url_site %}<a href="{{ l.url_site }}" target="_blank" class="link-accent">↗ link</a>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                <td><div class="actions">
+                    <a href="/licenciaturas/{{ l.pk }}/editar/" class="btn btn-edit">✎ Editar</a>
+                    <a href="/licenciaturas/{{ l.pk }}/apagar/" class="btn btn-del">✕ Apagar</a>
+                </div></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4"><div class="empty"><span>🎓</span>Nenhuma licenciatura adicionada ainda.</div></td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

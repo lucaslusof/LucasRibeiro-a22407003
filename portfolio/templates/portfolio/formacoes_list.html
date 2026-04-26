@@ -1,0 +1,34 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}Formações{% endblock %}
+{% block nav_form %}active{% endblock %}
+{% block breadcrumb %}<b>/ formações</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// portfólio</div>
+        <div class="page-title">Formações</div>
+    </div>
+    <a href="/formacoes/nova/" class="btn btn-primary">+ Nova Formação</a>
+</div>
+<div class="card">
+    <table>
+        <thead><tr><th>Descrição</th><th>Instituição</th><th>Início</th><th>Fim</th><th>Ações</th></tr></thead>
+        <tbody>
+        {% for f in formacoes %}
+            <tr>
+                <td class="text-dark">{{ f.descricao }}</td>
+                <td><span class="badge badge-green">{{ f.instituicao }}</span></td>
+                <td class="text-muted">{{ f.data_inicio }}</td>
+                <td class="text-muted">{{ f.data_fim|default:"Em curso" }}</td>
+                <td><div class="actions">
+                    <a href="/formacoes/{{ f.pk }}/editar/" class="btn btn-edit">✎ Editar</a>
+                    <a href="/formacoes/{{ f.pk }}/apagar/" class="btn btn-del">✕ Apagar</a>
+                </div></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5"><div class="empty"><span>◷</span>Nenhuma formação adicionada ainda.</div></td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

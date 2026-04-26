@@ -1,0 +1,33 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}Competências{% endblock %}
+{% block nav_comp %}active{% endblock %}
+{% block breadcrumb %}<b>/ competências</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// portfólio</div>
+        <div class="page-title">Competências</div>
+    </div>
+    <a href="/competencias/nova/" class="btn btn-primary">+ Nova Competência</a>
+</div>
+<div class="card">
+    <table>
+        <thead><tr><th>Nome</th><th>Nível</th><th>Descrição</th><th>Ações</th></tr></thead>
+        <tbody>
+        {% for c in competencias %}
+            <tr>
+                <td class="text-dark">{{ c.nome }}</td>
+                <td><span class="stars">{% for i in "12345" %}{% if forloop.counter <= c.nivel %}★{% else %}☆{% endif %}{% endfor %}</span></td>
+                <td class="text-muted">{{ c.descricao|truncatechars:55 }}</td>
+                <td><div class="actions">
+                    <a href="/competencias/{{ c.pk }}/editar/" class="btn btn-edit">✎ Editar</a>
+                    <a href="/competencias/{{ c.pk }}/apagar/" class="btn btn-del">✕ Apagar</a>
+                </div></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4"><div class="empty"><span>◎</span>Nenhuma competência adicionada ainda.</div></td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

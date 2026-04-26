@@ -1,0 +1,34 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}Tecnologias{% endblock %}
+{% block nav_tec %}active{% endblock %}
+{% block breadcrumb %}<b>/ tecnologias</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// portfólio</div>
+        <div class="page-title">Tecnologias</div>
+    </div>
+    <a href="/tecnologias/nova/" class="btn btn-primary">+ Nova Tecnologia</a>
+</div>
+<div class="card">
+    <table>
+        <thead><tr><th>Nome</th><th>Categoria</th><th>Interesse</th><th>Site</th><th>Ações</th></tr></thead>
+        <tbody>
+        {% for t in tecnologias %}
+            <tr>
+                <td class="text-dark">{{ t.nome }}</td>
+                <td>{% if t.get_categoria_display %}<span class="badge badge-cyan">{{ t.get_categoria_display }}</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                <td><span class="stars">{% for i in "12345" %}{% if forloop.counter <= t.nivel_interesse %}★{% else %}☆{% endif %}{% endfor %}</span></td>
+                <td>{% if t.url_site %}<a href="{{ t.url_site }}" target="_blank" class="link-accent">↗ link</a>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                <td><div class="actions">
+                    <a href="/tecnologias/{{ t.pk }}/editar/" class="btn btn-edit">✎ Editar</a>
+                    <a href="/tecnologias/{{ t.pk }}/apagar/" class="btn btn-del">✕ Apagar</a>
+                </div></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5"><div class="empty"><span>◉</span>Nenhuma tecnologia adicionada ainda.</div></td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -44,11 +44,12 @@ class UnidadeCurricular(models.Model):
 class Tecnologia(models.Model):
     CATEGORIAS = [
         ('linguagem', 'Linguagem'),
-        ('framework', 'Framework'),
-        ('ferramenta', 'Ferramenta'),
-        ('base_dados', 'Base de Dados'),
-        ('devops', 'DevOps'),
-    ]
+    ('framework', 'Framework'),
+    ('ferramenta', 'Ferramenta'),
+    ('base_dados', 'Base de Dados'),
+    ('devops', 'DevOps'),
+]
+    categoria = models.CharField(max_length=20, choices=CATEGORIAS, blank=True)
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
     logo = models.ImageField(upload_to='tecnologias/', blank=True)
@@ -78,6 +79,7 @@ class TFC(models.Model):
     ano = models.IntegerField()
     link_documento = models.URLField()
     tecnologias = models.ManyToManyField(Tecnologia, related_name='tfcs', blank=True)
+    destaque = models.BooleanField(default=False)  # adiciona esta linha
 
     def __str__(self):
         return self.titulo

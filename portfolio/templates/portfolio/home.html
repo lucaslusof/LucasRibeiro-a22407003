@@ -1,0 +1,64 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}Início{% endblock %}
+{% block nav_home %}active{% endblock %}
+{% block breadcrumb %}<b>/ início</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// dashboard</div>
+        <div class="page-title">O meu Portfólio</div>
+    </div>
+</div>
+<div class="stats-grid">
+    <a href="/licenciaturas/" class="stat-card">
+        <div class="stat-ico">🎓</div>
+        <div class="stat-num">{{ licenciaturas.count }}</div>
+        <div class="stat-label">Licenciaturas</div>
+    </a>
+    <a href="/ucs/" class="stat-card">
+        <div class="stat-ico">📚</div>
+        <div class="stat-num">{{ ucs.count }}</div>
+        <div class="stat-label">Unid. Curriculares</div>
+    </a>
+    <a href="/docentes/" class="stat-card">
+        <div class="stat-ico">👤</div>
+        <div class="stat-num">{{ docentes.count }}</div>
+        <div class="stat-label">Docentes</div>
+    </a>
+    <a href="/projetos/" class="stat-card">
+        <div class="stat-ico">◈</div>
+        <div class="stat-num">{{ projetos.count }}</div>
+        <div class="stat-label">Projetos</div>
+    </a>
+    <a href="/tecnologias/" class="stat-card">
+        <div class="stat-ico">◉</div>
+        <div class="stat-num">{{ tecnologias.count }}</div>
+        <div class="stat-label">Tecnologias</div>
+    </a>
+    <a href="/competencias/" class="stat-card">
+        <div class="stat-ico">◎</div>
+        <div class="stat-num">{{ competencias.count }}</div>
+        <div class="stat-label">Competências</div>
+    </a>
+    <a href="/formacoes/" class="stat-card">
+        <div class="stat-ico">◷</div>
+        <div class="stat-num">{{ formacoes.count }}</div>
+        <div class="stat-label">Formações</div>
+    </a>
+    <a href="/tfcs/" class="stat-card">
+        <div class="stat-ico">◌</div>
+        <div class="stat-num">{{ tfcs.count }}</div>
+        <div class="stat-label">TFCs</div>
+    </a>
+    <a href="/escola/cursos/" class="stat-card">
+        <div class="stat-ico">🏫</div>
+        <div class="stat-num">{{ cursos.count }}</div>
+        <div class="stat-label">Cursos</div>
+    </a>
+    <a href="/escola/alunos/" class="stat-card">
+        <div class="stat-ico">🎒</div>
+        <div class="stat-num">{{ alunos.count }}</div>
+        <div class="stat-label">Alunos</div>
+    </a>
+</div>
+{% endblock %}
