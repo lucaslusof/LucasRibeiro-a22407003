@@ -1,0 +1,26 @@
+{% extends 'portfolio/base.html' %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// acesso</div>
+        <div class="page-title">Login</div>
+    </div>
+</div>
+
+<div class="form-card">
+    {% if erro %}
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:10px 14px;margin-bottom:16px;color:#ef4444;font-size:13px;">
+            {{ erro }}
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <p><label>Username</label><input type="text" name="username" required></p>
+        <p><label>Password</label><input type="password" name="password" required></p>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Entrar</button>
+            <a href="{% url 'registo' %}" class="btn btn-ghost">Criar conta</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

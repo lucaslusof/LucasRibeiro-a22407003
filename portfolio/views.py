@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from .models import Licenciatura, Docente, UnidadeCurricular, Projeto, Tecnologia, TFC, Competencia, Formacao
 from .forms import LicenciaturaForm, DocenteForm, UCForm, ProjetoForm, TecnologiaForm, TFCForm, CompetenciaForm, FormacaoForm
 from escola.models import Curso, Aluno
+from itertools import groupby
 
 def home(request):
     return render(request, 'portfolio/home.html', {
@@ -99,6 +101,7 @@ def uc_delete(request, pk):
 def projetos_list(request):
     return render(request, 'portfolio/projetos_list.html', {'projetos': Projeto.objects.all()})
 
+@login_required
 def projeto_create(request):
     form = ProjetoForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -106,6 +109,7 @@ def projeto_create(request):
         return redirect('projetos_list')
     return render(request, 'portfolio/form.html', {'form': form, 'titulo': 'Novo Projeto'})
 
+@login_required
 def projeto_edit(request, pk):
     obj = get_object_or_404(Projeto, pk=pk)
     form = ProjetoForm(request.POST or None, request.FILES or None, instance=obj)
@@ -114,6 +118,7 @@ def projeto_edit(request, pk):
         return redirect('projetos_list')
     return render(request, 'portfolio/form.html', {'form': form, 'titulo': 'Editar Projeto'})
 
+@login_required
 def projeto_delete(request, pk):
     obj = get_object_or_404(Projeto, pk=pk)
     if request.method == 'POST':
@@ -224,3 +229,48 @@ def formacao_delete(request, pk):
         obj.delete()
         return redirect('formacoes_list')
     return render(request, 'portfolio/confirmar_apagar.html', {'objeto': obj, 'titulo': 'Apagar Formação'})
+
+def makingof_page(request):
+    from .models import MakingOf
+    makingofs = MakingOf.objects.all()
+    return render(request, 'portfolio/makingof.html', {'makingofs': makingofs})
+
+# Adiciona ao topo do portfolio/views.py:
+from itertools import groupby
+def sobre(request):
+    from .models import MakingOf
+    from itertools import groupby
+
+    tecnologias = Tecnologia.objects.all().order_by('categoria', 'nome')
+    tecnologias_por_tipo = []
+    for cat_key, group in groupby(tecnologias, key=lambda t: t.categoria or 'outros'):
+        label = dict([
+            ('linguagem', 'Linguagem'),
+            ('framework', 'Framework'),
+            ('ferramenta', 'Ferramenta'),
+            ('base_dados', 'Base de Dados'),
+            ('devops', 'DevOps'),
+            ('outros', 'Outros'),
+        ]).get(cat_key, cat_key.capitalize())
+        tecnologias_por_tipo.append((label, list(group)))
+
+    entidades = [
+        ('Licenciatura',        ['nome','sigla','url_site','descricao','imagem']),
+        ('UnidadeCurricular',   ['licenciatura FK','nome','sigla','ano','semestre','ects']),
+        ('Docente',             ['nome','email','url_lusofona','foto']),
+        ('Projeto',             ['uc FK','titulo','descricao','link_github','tecnologias M2M']),
+        ('Tecnologia',          ['nome','categoria','descricao','logo','nivel_interesse']),
+        ('TFC',                 ['titulo','resumo','ano','link_documento','destaque']),
+        ('Competencia',         ['nome','descricao','nivel']),
+        ('Formacao',            ['instituicao','descricao','data_inicio','data_fim']),
+        ('MakingOf',            ['titulo','entidade_relacionada','descricao','decisoes','foto_papel']),
+    ]
+
+    return render(request, 'portfolio/sobre.html', {
+        'tecnologias_por_tipo': tecnologias_por_tipo,
+        'entidades': entidades,
+        'makingofs': MakingOf.objects.all()[:6],
+        'foto_mvt': None,
+        'foto_der': None,
+        'foto_estrutura': None,
+    })

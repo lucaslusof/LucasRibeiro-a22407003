@@ -51,4 +51,8 @@ urlpatterns = [
     path('formacoes/nova/', views.formacao_create, name='formacao_create'),
     path('formacoes/<int:pk>/editar/', views.formacao_edit, name='formacao_edit'),
     path('formacoes/<int:pk>/apagar/', views.formacao_delete, name='formacao_delete'),
+
+    path('makingof/', views.makingof_page, name='makingof_page'),
+    path('sobre/', views.sobre, name='sobre'),
+
 ]

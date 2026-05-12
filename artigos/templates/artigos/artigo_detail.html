@@ -1,0 +1,62 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}{{ artigo.titulo }}{% endblock %}
+{% block breadcrumb %}<b>/ artigos / {{ artigo.titulo }}</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">{{ artigo.data_criacao|date:"d M Y" }} — {{ artigo.autor.username }}</div>
+        <div class="page-title">{{ artigo.titulo }}</div>
+    </div>
+    {% if request.user == artigo.autor %}
+        <a href="{% url 'artigo_edit' artigo.pk %}" class="btn btn-edit">✎ Editar</a>
+    {% endif %}
+</div>
+
+<div class="card" style="padding:24px;margin-bottom:20px;">
+    {% if artigo.fotografia %}
+        <img src="{{ artigo.fotografia.url }}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-bottom:16px;">
+    {% endif %}
+    <p style="font-size:14px;color:#374151;line-height:1.8;">{{ artigo.texto }}</p>
+    {% if artigo.link_externo %}
+        <a href="{{ artigo.link_externo }}" target="_blank" class="link-accent" style="display:block;margin-top:12px;">↗ Link externo</a>
+    {% endif %}
+    <div style="margin-top:16px;">
+        <a href="{% url 'artigo_like' artigo.pk %}" class="btn btn-ghost">
+            ❤️ {{ artigo.likes.count }} gosto{{ artigo.likes.count|pluralize:"s" }}
+        </a>
+    </div>
+</div>
+
+<!-- COMENTÁRIOS -->
+<h3 style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:16px;">
+    Comentários ({{ comentarios.count }})
+</h3>
+
+{% for c in comentarios %}
+<div class="card" style="padding:14px;margin-bottom:10px;">
+    <div style="font-family:'Space Mono',monospace;font-size:10px;color:#94a3b8;margin-bottom:6px;">
+        {{ c.autor.username }} — {{ c.data|date:"d M Y H:i" }}
+    </div>
+    <p style="font-size:13px;color:#374151;">{{ c.texto }}</p>
+</div>
+{% empty %}
+<p style="color:#94a3b8;font-size:13px;">Ainda sem comentários.</p>
+{% endfor %}
+
+{% if request.user.is_authenticated %}
+<div style="margin-top:20px;">
+    <h4 style="font-size:14px;font-weight:600;margin-bottom:10px;">Deixa um comentário</h4>
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            {{ form_comentario.as_p }}
+            <button type="submit" class="btn btn-primary">Comentar</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<p style="margin-top:16px;font-size:13px;color:#64748b;">
+    <a href="{% url 'login' %}" class="link-accent">Faz login</a> para comentar.
+</p>
+{% endif %}
+{% endblock %}

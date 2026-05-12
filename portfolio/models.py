@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Licenciatura(models.Model):
     nome = models.CharField(max_length=200)
     sigla = models.CharField(max_length=20)

@@ -87,6 +87,7 @@
         .text-dark { color:#0f172a !important; font-weight:600; }
         .text-muted { color:#64748b; }
         a.link-accent { color:#0284c7; font-size:12px; font-family:'Space Mono',monospace; }
+        .user-badge { background:rgba(14,165,233,0.1); border:1px solid rgba(14,165,233,0.2); border-radius:20px; padding:3px 10px; font-size:11px; color:var(--accent); font-family:'Space Mono',monospace; }
     </style>
 </head>
 <body>
@@ -96,29 +97,61 @@
         <h2>Lucas Ribeiro</h2>
         <small>a22407003</small>
     </div>
+
     <div class="nav-section">Menu</div>
     <a href="/" class="nav-link {% block nav_home %}{% endblock %}"><span class="nav-ico">⌂</span> Início</a>
+
     <div class="nav-section">Académico</div>
     <a href="/licenciaturas/" class="nav-link {% block nav_lic %}{% endblock %}"><span class="nav-ico">🎓</span> Licenciaturas</a>
     <a href="/ucs/" class="nav-link {% block nav_uc %}{% endblock %}"><span class="nav-ico">📚</span> Unid. Curriculares</a>
     <a href="/docentes/" class="nav-link {% block nav_doc %}{% endblock %}"><span class="nav-ico">👤</span> Docentes</a>
+
     <div class="nav-section">Portfólio</div>
     <a href="/projetos/" class="nav-link {% block nav_proj %}{% endblock %}"><span class="nav-ico">◈</span> Projetos</a>
     <a href="/tecnologias/" class="nav-link {% block nav_tec %}{% endblock %}"><span class="nav-ico">◉</span> Tecnologias</a>
     <a href="/competencias/" class="nav-link {% block nav_comp %}{% endblock %}"><span class="nav-ico">◎</span> Competências</a>
     <a href="/formacoes/" class="nav-link {% block nav_form %}{% endblock %}"><span class="nav-ico">◷</span> Formações</a>
     <a href="/tfcs/" class="nav-link {% block nav_tfc %}{% endblock %}"><span class="nav-ico">◌</span> TFCs</a>
+
     <div class="nav-section">Escola</div>
     <a href="/escola/cursos/" class="nav-link {% block nav_cursos %}{% endblock %}"><span class="nav-ico">🏫</span> Cursos</a>
     <a href="/escola/professores/" class="nav-link {% block nav_profs %}{% endblock %}"><span class="nav-ico">👨‍🏫</span> Professores</a>
     <a href="/escola/alunos/" class="nav-link {% block nav_alunos %}{% endblock %}"><span class="nav-ico">🎒</span> Alunos</a>
+
+    <div class="nav-section">Blog</div>
+    <a href="/artigos/" class="nav-link {% block nav_artigos %}{% endblock %}"><span class="nav-ico">✍️</span> Artigos</a>
+
+    <div class="nav-section">Documentação</div>
+    <a href="/sobre/" class="nav-link {% block nav_sobre %}{% endblock %}"><span class="nav-ico">ℹ️</span> Sobre</a>
+    <a href="/makingof/" class="nav-link {% block nav_makingof %}{% endblock %}"><span class="nav-ico">📝</span> Making Of</a>
+
     <div class="nav-section">Sistema</div>
     <a href="/admin/" class="nav-link"><span class="nav-ico">⚙</span> Admin</a>
+
+    <div class="nav-section">Conta</div>
+    {% if request.user.is_authenticated %}
+        <div class="nav-link" style="cursor:default;">
+            <span class="nav-ico">👤</span>
+            <span class="user-badge">{{ request.user.username }}</span>
+        </div>
+        <a href="/accounts/logout/" class="nav-link"><span class="nav-ico">↩</span> Logout</a>
+    {% else %}
+        <a href="/accounts/login/" class="nav-link"><span class="nav-ico">→</span> Login</a>
+        <a href="/accounts/registo/" class="nav-link"><span class="nav-ico">+</span> Registar</a>
+    {% endif %}
+
     <div class="sidebar-footer"><span class="dot"></span>sistema ativo</div>
 </aside>
+
 <div class="main">
     <div class="topbar">
         <div class="breadcrumb">{% block breadcrumb %}<b>/</b>{% endblock %}</div>
+        {% if request.user.is_authenticated %}
+            <div style="margin-left:auto;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+                👤 {{ request.user.username }}
+                {% if request.user.is_staff %}<span class="badge badge-cyan" style="margin-left:6px;">admin</span>{% endif %}
+            </div>
+        {% endif %}
     </div>
     <div class="content">{% block content %}{% endblock %}</div>
 </div>

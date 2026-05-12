@@ -1,0 +1,472 @@
+{% extends 'portfolio/base.html' %}
+{% load markdownify %}
+{% block title %}Sobre esta Aplicação{% endblock %}
+{% block nav_sobre %}active{% endblock %}
+{% block breadcrumb %}<b>/ sobre</b>{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// documentação técnica</div>
+        <div class="page-title">Sobre esta Aplicação</div>
+    </div>
+</div>
+
+<!-- ÍNDICE -->
+<nav class="sobre-nav">
+    <a href="#mvt" class="sobre-nav-item">01 Arquitetura MVT</a>
+    <a href="#modelacao" class="sobre-nav-item">02 Modelação</a>
+    <a href="#tecnologias" class="sobre-nav-item">03 Tecnologias</a>
+    <a href="#estrutura" class="sobre-nav-item">04 Estrutura</a>
+    <a href="#github" class="sobre-nav-item">05 GitHub</a>
+    <a href="#makingof" class="sobre-nav-item">06 Making Of</a>
+</nav>
+
+<!-- ── 01 MVT ── -->
+<section class="sobre-sec" id="mvt">
+    <div class="sobre-sec-num">01</div>
+    <h2 class="sobre-sec-title">Arquitetura MVT do Django</h2>
+
+    <p class="sobre-text">O Django segue o padrão <strong>MVT — Model, View, Template</strong>, uma variação do clássico MVC. É a arquitetura que organiza todo o código desta aplicação.</p>
+
+    <!-- Foto do papel -->
+    {% if foto_mvt %}
+    <div class="sobre-foto-wrap">
+        <img src="{{ foto_mvt.url }}" alt="Desenho da arquitetura MVT em papel" class="sobre-foto">
+        <p class="sobre-foto-caption">Desenho da arquitetura MVT (em papel e lápis)</p>
+    </div>
+    {% else %}
+    <div class="sobre-foto-placeholder">
+        <span>📷</span>
+        <p>Fotografia do desenho em papel — adiciona em <a href="/admin/portfolio/makingof/" class="link-accent">Admin → Making Of</a></p>
+    </div>
+    {% endif %}
+
+    <!-- Componentes -->
+    <h3 class="sobre-subtitle">Componentes</h3>
+    <div class="mvt-cards">
+        <div class="mvt-card">
+            <div class="mvt-card-icon">🗄️</div>
+            <div class="mvt-card-label">Model</div>
+            <div class="mvt-card-file">portfolio/models.py</div>
+            <p>Define a estrutura dos dados. Cada classe Python corresponde a uma tabela na base de dados. O ORM do Django traduz as operações Python em SQL automaticamente — não é necessário escrever SQL diretamente.</p>
+            <div class="mvt-code">Projeto.objects.all()</div>
+        </div>
+        <div class="mvt-card">
+            <div class="mvt-card-icon">⚙️</div>
+            <div class="mvt-card-label">View</div>
+            <div class="mvt-card-file">portfolio/views.py</div>
+            <p>Recebe o pedido HTTP, consulta os Models, processa a lógica de negócio e devolve uma resposta. É o intermediário entre os dados e a apresentação. Nunca contém HTML.</p>
+            <div class="mvt-code">render(request, 'template.html', contexto)</div>
+        </div>
+        <div class="mvt-card">
+            <div class="mvt-card-icon">🎨</div>
+            <div class="mvt-card-label">Template</div>
+            <div class="mvt-card-file">templates/portfolio/*.html</div>
+            <p>Ficheiro HTML com sintaxe Django que apresenta os dados. Recebe o contexto da View e renderiza o HTML final. Não faz queries nem processa lógica complexa.</p>
+            <div class="mvt-code">{% verbatim %}{% for p in projetos %}{{ p.titulo }}{% endfor %}{% endverbatim %}</div>
+        </div>
+    </div>
+
+    <!-- Fluxo -->
+    <h3 class="sobre-subtitle">Fluxo de informação</h3>
+    <div class="mvt-flow">
+        <div class="mvt-flow-step">
+            <div class="mvt-flow-icon">🌐</div>
+            <div class="mvt-flow-name">1. Browser</div>
+            <div class="mvt-flow-desc">GET /projetos/</div>
+        </div>
+        <div class="mvt-flow-arrow">→</div>
+        <div class="mvt-flow-step">
+            <div class="mvt-flow-icon">🗺️</div>
+            <div class="mvt-flow-name">2. urls.py</div>
+            <div class="mvt-flow-desc">Encaminha para View</div>
+        </div>
+        <div class="mvt-flow-arrow">→</div>
+        <div class="mvt-flow-step mvt-flow-hl">
+            <div class="mvt-flow-icon">⚙️</div>
+            <div class="mvt-flow-name">3. View</div>
+            <div class="mvt-flow-desc">Processa lógica</div>
+        </div>
+        <div class="mvt-flow-arrow">→</div>
+        <div class="mvt-flow-step">
+            <div class="mvt-flow-icon">🗄️</div>
+            <div class="mvt-flow-name">4. Model</div>
+            <div class="mvt-flow-desc">Consulta BD</div>
+        </div>
+        <div class="mvt-flow-arrow">→</div>
+        <div class="mvt-flow-step">
+            <div class="mvt-flow-icon">🎨</div>
+            <div class="mvt-flow-name">5. Template</div>
+            <div class="mvt-flow-desc">Renderiza HTML</div>
+        </div>
+        <div class="mvt-flow-arrow">→</div>
+        <div class="mvt-flow-step">
+            <div class="mvt-flow-icon">📄</div>
+            <div class="mvt-flow-name">6. Resposta</div>
+            <div class="mvt-flow-desc">HTML ao browser</div>
+        </div>
+    </div>
+
+    <!-- Vídeo -->
+    <h3 class="sobre-subtitle">Vídeo tutorial — Formulário para criar novo projeto</h3>
+    <p class="sobre-text">Demonstração da criação e funcionamento de uma página com formulário Django para criar um novo projeto:</p>
+    <div class="sobre-video">
+        <iframe src="https://www.youtube.com/embed/zkaXaIpEdqA"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+    </div>
+</section>
+
+<!-- ── 02 MODELAÇÃO ── -->
+<section class="sobre-sec" id="modelacao">
+    <div class="sobre-sec-num">02</div>
+    <h2 class="sobre-sec-title">Modelação de Dados</h2>
+
+    <p class="sobre-text">Antes de implementar qualquer código foi realizada a modelação das entidades em papel — identificando atributos, tipos e relações.</p>
+
+    {% if foto_der %}
+    <div class="sobre-foto-wrap">
+        <img src="{{ foto_der.url }}" alt="Diagrama Entidade-Relação em papel" class="sobre-foto">
+        <p class="sobre-foto-caption">Diagrama Entidade-Relação (DER) desenhado em papel</p>
+    </div>
+    {% else %}
+    <div class="sobre-foto-placeholder">
+        <span>📷</span>
+        <p>Fotografia do DER em papel — adiciona em <a href="/admin/portfolio/makingof/" class="link-accent">Admin → Making Of</a></p>
+    </div>
+    {% endif %}
+
+    <h3 class="sobre-subtitle">Entidades e atributos</h3>
+    <div class="mod-grid">
+        {% for entidade, campos in entidades %}
+        <div class="mod-card">
+            <div class="mod-card-title">{{ entidade }}</div>
+            {% for campo in campos %}
+            <div class="mod-field">{{ campo }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <h3 class="sobre-subtitle">Relações</h3>
+    <div class="sobre-code">
+        <div class="sobre-code-label">Diagrama de relações</div>
+        <pre>Licenciatura   ──1:N──►  UnidadeCurricular
+UnidadeCurricular ◄──N:M──►  Docente
+UnidadeCurricular  ──1:N──►  Projeto
+Projeto        ◄──N:M──►  Tecnologia
+Projeto        ◄──N:M──►  Competencia
+TFC            ◄──N:M──►  Tecnologia
+Formacao       ◄──N:M──►  Competencia
+Docente (portfolio) ──1:N──► Curso (escola)
+Curso (escola) ◄──N:M──►  Aluno (escola)</pre>
+    </div>
+
+    <h3 class="sobre-subtitle">models.py</h3>
+    <div class="sobre-code">
+        <div class="sobre-code-label">portfolio/models.py</div>
+        <pre>class Licenciatura(models.Model):
+    nome = models.CharField(max_length=200)
+    sigla = models.CharField(max_length=20)
+    url_site = models.URLField(blank=True)
+    imagem = models.ImageField(upload_to='licenciatura/', blank=True)
+
+class UnidadeCurricular(models.Model):
+    licenciatura = models.ForeignKey(Licenciatura, on_delete=models.CASCADE)
+    docentes = models.ManyToManyField('Docente', blank=True)
+    nome = models.CharField(max_length=200)
+    ano = models.IntegerField()
+    semestre = models.IntegerField()
+    ects = models.IntegerField(default=6)
+    objetivos = models.TextField(blank=True)
+    programa = models.TextField(blank=True)
+
+class Projeto(models.Model):
+    uc = models.ForeignKey(UnidadeCurricular, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=150)
+    descricao = models.TextField()
+    link_github = models.URLField(blank=True)
+    tecnologias = models.ManyToManyField('Tecnologia')
+    competencias = models.ManyToManyField('Competencia', blank=True)
+
+class Tecnologia(models.Model):
+    nome = models.CharField(max_length=100)
+    tipo = models.ForeignKey('TipoTecnologia', on_delete=models.SET_NULL, null=True)
+    descricao = models.TextField(blank=True)
+    logo = models.ImageField(upload_to='tecnologias/', blank=True)
+    nivel_interesse = models.IntegerField(default=3)</pre>
+    </div>
+</section>
+
+<!-- ── 03 TECNOLOGIAS ── -->
+<section class="sobre-sec" id="tecnologias">
+    <div class="sobre-sec-num">03</div>
+    <h2 class="sobre-sec-title">Tecnologias Utilizadas</h2>
+    <p class="sobre-text">Tecnologias usadas na construção desta aplicação Django, organizadas por tipo.</p>
+
+    {% if tecnologias_por_tipo %}
+        {% for tipo, techs in tecnologias_por_tipo %}
+        <div class="tech-group">
+            <h3 class="tech-group-title">{{ tipo }}</h3>
+            <div class="tech-grid">
+                {% for t in techs %}
+                <div class="tech-card">
+                    {% if t.logo %}
+                        <img src="{{ t.logo.url }}" alt="{{ t.nome }}" class="tech-logo">
+                    {% else %}
+                        <div class="tech-logo-placeholder">◉</div>
+                    {% endif %}
+                    <div class="tech-name">{{ t.nome }}</div>
+                    {% if t.descricao %}
+                        <div class="tech-desc">{{ t.descricao|truncatechars:120 }}</div>
+                    {% endif %}
+                    <div class="stars">
+                        {% for i in "12345" %}{% if forloop.counter <= t.nivel_interesse %}★{% else %}☆{% endif %}{% endfor %}
+                    </div>
+                    {% if t.url_site %}
+                        <a href="{{ t.url_site }}" target="_blank" class="tech-link">↗ site oficial</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="sobre-vazio">
+        <span>⚙️</span>
+        <p>Adiciona tecnologias no <a href="/admin/portfolio/tecnologia/" class="link-accent">admin</a> e associa-as ao tipo correto (Frontend, Backend, etc.).</p>
+    </div>
+    {% endif %}
+</section>
+
+<!-- ── 04 ESTRUTURA ── -->
+<section class="sobre-sec" id="estrutura">
+    <div class="sobre-sec-num">04</div>
+    <h2 class="sobre-sec-title">Estrutura de Navegação</h2>
+
+    <p class="sobre-text">Mapa de todas as páginas da aplicação e como se relacionam entre si.</p>
+
+    {% if foto_estrutura %}
+    <div class="sobre-foto-wrap">
+        <img src="{{ foto_estrutura.url }}" alt="Mapa de navegação em papel" class="sobre-foto">
+        <p class="sobre-foto-caption">Mapa de estrutura de navegação (desenhado em papel)</p>
+    </div>
+    {% else %}
+    <div class="sobre-foto-placeholder">
+        <span>📷</span>
+        <p>Fotografia do mapa de navegação em papel — adiciona em <a href="/admin/portfolio/makingof/" class="link-accent">Admin</a></p>
+    </div>
+    {% endif %}
+
+    <div class="sobre-code">
+        <div class="sobre-code-label">Mapa de páginas</div>
+        <pre>/                         Dashboard (início)
+│
+├── /licenciaturas/         Lista + CRUD licenciaturas
+├── /ucs/                   Lista + CRUD unidades curriculares
+├── /docentes/              Lista + CRUD docentes
+│
+├── /projetos/              Lista projetos
+│     ├── /projetos/novo/       Criar projeto
+│     ├── /projetos/&lt;pk&gt;/editar/ Editar projeto
+│     └── /projetos/&lt;pk&gt;/apagar/ Apagar projeto
+│
+├── /tecnologias/           Lista + CRUD tecnologias
+├── /competencias/          Lista + CRUD competências
+├── /formacoes/             Lista + CRUD formações
+├── /tfcs/                  Lista + CRUD TFCs
+│
+├── /escola/
+│     ├── /escola/cursos/       Lista cursos
+│     ├── /escola/professores/  Lista professores
+│     ├── /escola/alunos/       Lista alunos
+│     └── /escola/curso/&lt;id&gt;    Detalhe de curso
+│
+├── /sobre/                 Esta página
+├── /makingof/              Making Of detalhado
+└── /admin/                 Django Admin</pre>
+    </div>
+</section>
+
+<!-- ── 05 GITHUB ── -->
+<section class="sobre-sec" id="github">
+    <div class="sobre-sec-num">05</div>
+    <h2 class="sobre-sec-title">Repositório GitHub</h2>
+
+    <p class="sobre-text">O código-fonte desta aplicação está disponível publicamente no GitHub:</p>
+
+    <a href="https://github.com/lucaslusof/LucasRibeiro-a22407003" target="_blank" class="github-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        lucaslusof / LucasRibeiro-a22407003
+    </a>
+
+    <h3 class="sobre-subtitle" style="margin-top:24px;">Como foi usado o Git e GitHub</h3>
+
+    <div class="github-grid">
+        <div class="github-card">
+            <div class="github-card-icon">📦</div>
+            <h4>Controlo de versões</h4>
+            <p>Cada funcionalidade implementada foi guardada com um commit descritivo. Isto permite reverter para qualquer versão anterior caso algo corra mal.</p>
+        </div>
+        <div class="github-card">
+            <div class="github-card-icon">☁️</div>
+            <h4>Backup automático</h4>
+            <p>O código está sempre seguro no GitHub — mesmo que o Codespace seja apagado, o trabalho não se perde. O push regular foi uma prática essencial.</p>
+        </div>
+        <div class="github-card">
+            <div class="github-card-icon">🌐</div>
+            <h4>Codespaces</h4>
+            <p>O GitHub Codespaces permite desenvolver diretamente no browser, sem instalar nada localmente. Todo este projeto foi desenvolvido no Codespace associado a este repositório.</p>
+        </div>
+        <div class="github-card">
+            <div class="github-card-icon">📋</div>
+            <h4>Histórico de commits</h4>
+            <p>O histórico de commits documenta a evolução do projeto — cada mensagem descreve o que foi implementado, tornando fácil perceber o progresso ao longo do tempo.</p>
+        </div>
+    </div>
+
+    <div class="sobre-code" style="margin-top:20px;">
+        <div class="sobre-code-label">Comandos git usados regularmente</div>
+        <pre>git add *                          # adiciona todos os ficheiros alterados
+git commit -m "mensagem clara"     # guarda as alterações localmente
+git push -u origin main            # envia para o GitHub
+git pull origin main               # recebe alterações do GitHub</pre>
+    </div>
+</section>
+
+<!-- ── 06 MAKING OF ── -->
+<section class="sobre-sec" id="makingof">
+    <div class="sobre-sec-num">06</div>
+    <h2 class="sobre-sec-title">Making Of</h2>
+
+    <p class="sobre-text">Registo do processo de desenvolvimento — decisões tomadas, dificuldades encontradas e reflexões sobre a construção desta aplicação.</p>
+
+    {% if makingofs %}
+    <div class="mo-preview-grid">
+        {% for m in makingofs %}
+        <div class="mo-preview-card">
+            <div class="mo-preview-header">
+                <span class="badge badge-cyan">{{ m.get_entidade_relacionada_display }}</span>
+                <span class="mo-preview-date">{{ m.criado_em|date:"d/m/Y" }}</span>
+            </div>
+            <h4 class="mo-preview-title">{{ m.titulo }}</h4>
+            {% if m.foto_papel %}
+                <img src="{{ m.foto_papel.url }}" alt="Papel" class="mo-preview-foto">
+            {% endif %}
+            {% if m.descricao %}
+                <div class="mo-preview-text">{{ m.descricao|markdownify|truncatewords_html:40 }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+        <a href="/makingof/" class="btn btn-primary">Ver Making Of completo →</a>
+    </div>
+    {% else %}
+    <div class="sobre-vazio">
+        <span>📝</span>
+        <p>Ainda não há entradas. <a href="/admin/portfolio/makingof/add/" class="link-accent">Adiciona a primeira no admin →</a></p>
+    </div>
+    {% endif %}
+</section>
+
+<style>
+/* NAV */
+.sobre-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
+.sobre-nav-item { background:#f1f5f9; color:#475569; text-decoration:none; padding:6px 14px; border-radius:20px; font-family:'Space Mono',monospace; font-size:11px; transition:all .15s; }
+.sobre-nav-item:hover { background:#e0f2fe; color:#0284c7; }
+
+/* SECTIONS */
+.sobre-sec { margin-bottom:52px; padding-bottom:44px; border-bottom:1px solid #e2e8f0; }
+.sobre-sec:last-child { border-bottom:none; }
+.sobre-sec-num { font-family:'Space Mono',monospace; font-size:9px; color:#0ea5e9; letter-spacing:3px; text-transform:uppercase; margin-bottom:4px; }
+.sobre-sec-title { font-size:22px; font-weight:700; color:#0f172a; margin-bottom:14px; }
+.sobre-subtitle { font-size:15px; font-weight:600; color:#1e293b; margin:22px 0 10px; border-left:3px solid #0ea5e9; padding-left:10px; }
+.sobre-text { font-size:14px; color:#374151; line-height:1.7; margin-bottom:14px; }
+.sobre-text strong { color:#0f172a; }
+
+/* FOTOS */
+.sobre-foto-wrap { margin:16px 0; }
+.sobre-foto { max-width:100%; max-height:400px; object-fit:contain; border-radius:10px; border:1px solid #e2e8f0; display:block; }
+.sobre-foto-caption { font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic; }
+.sobre-foto-placeholder { background:#f8fafc; border:2px dashed #e2e8f0; border-radius:10px; padding:32px; text-align:center; color:#94a3b8; margin:16px 0; }
+.sobre-foto-placeholder span { font-size:32px; display:block; margin-bottom:8px; }
+.sobre-foto-placeholder p { font-size:13px; }
+
+/* MVT CARDS */
+.mvt-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin:16px 0; }
+.mvt-card { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:18px; }
+.mvt-card-icon { font-size:26px; margin-bottom:8px; }
+.mvt-card-label { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:#0284c7; margin-bottom:4px; }
+.mvt-card-file { font-family:'Space Mono',monospace; font-size:10px; background:#e0f2fe; color:#0284c7; padding:2px 8px; border-radius:4px; display:inline-block; margin-bottom:10px; }
+.mvt-card p { font-size:12px; color:#475569; line-height:1.5; margin-bottom:10px; }
+.mvt-code { font-family:'Space Mono',monospace; font-size:10px; background:#0f172a; color:#7dd3fc; padding:6px 10px; border-radius:4px; }
+
+/* MVT FLOW */
+.mvt-flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:16px 20px; margin:16px 0; }
+.mvt-flow-step { background:#fff; border:1px solid #bae6fd; border-radius:8px; padding:10px 12px; text-align:center; min-width:80px; }
+.mvt-flow-hl { background:#0ea5e9; border-color:#0ea5e9; }
+.mvt-flow-hl .mvt-flow-name { color:#fff; }
+.mvt-flow-hl .mvt-flow-desc { color:#e0f2fe; }
+.mvt-flow-icon { font-size:18px; margin-bottom:3px; }
+.mvt-flow-name { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; color:#0f172a; }
+.mvt-flow-desc { font-size:9px; color:#64748b; margin-top:2px; }
+.mvt-flow-arrow { color:#94a3b8; font-size:16px; }
+
+/* VIDEO */
+.sobre-video { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:10px; border:1px solid #e2e8f0; margin:16px 0; }
+.sobre-video iframe { position:absolute; top:0; left:0; width:100%; height:100%; }
+
+/* MODELS */
+.mod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin:14px 0; }
+.mod-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; }
+.mod-card-title { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#0284c7; margin-bottom:8px; }
+.mod-field { font-family:'Space Mono',monospace; font-size:10px; color:#64748b; padding:2px 0; border-bottom:1px solid #f1f5f9; }
+.mod-field:last-child { border-bottom:none; }
+
+/* CODE */
+.sobre-code { background:#0f172a; border-radius:8px; padding:16px 20px; margin:14px 0; }
+.sobre-code-label { font-family:'Space Mono',monospace; font-size:9px; color:#0ea5e9; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+.sobre-code pre { font-family:'Space Mono',monospace; font-size:12px; color:#e2e8f0; line-height:1.8; white-space:pre-wrap; }
+
+/* TECH */
+.tech-group { margin-bottom:28px; }
+.tech-group-title { font-family:'Space Mono',monospace; font-size:10px; color:#0ea5e9; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+.tech-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+.tech-card { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:16px; text-align:center; transition:all .15s; }
+.tech-card:hover { border-color:#0ea5e9; transform:translateY(-2px); box-shadow:0 4px 12px rgba(14,165,233,0.1); }
+.tech-logo { height:40px; object-fit:contain; margin-bottom:8px; }
+.tech-logo-placeholder { font-size:28px; margin-bottom:8px; color:#94a3b8; }
+.tech-name { font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px; }
+.tech-desc { font-size:11px; color:#64748b; line-height:1.4; margin-bottom:6px; }
+.tech-link { font-family:'Space Mono',monospace; font-size:10px; color:#0284c7; text-decoration:none; display:block; margin-top:6px; }
+.sobre-vazio { background:#f8fafc; border:2px dashed #e2e8f0; border-radius:10px; padding:32px; text-align:center; color:#94a3b8; }
+.sobre-vazio span { font-size:32px; display:block; margin-bottom:8px; }
+.sobre-vazio p { font-size:13px; }
+
+/* GITHUB */
+.github-btn { display:inline-flex; align-items:center; gap:10px; background:#0f172a; color:#fff; text-decoration:none; padding:12px 20px; border-radius:8px; font-family:'Space Mono',monospace; font-size:13px; transition:all .15s; margin-bottom:8px; }
+.github-btn:hover { background:#1e293b; transform:translateY(-1px); }
+.github-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; margin:16px 0; }
+.github-card { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:16px; }
+.github-card-icon { font-size:24px; margin-bottom:8px; }
+.github-card h4 { font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px; }
+.github-card p { font-size:12px; color:#475569; line-height:1.5; }
+
+/* MAKING OF PREVIEW */
+.mo-preview-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+.mo-preview-card { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:18px; }
+.mo-preview-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.mo-preview-date { font-family:'Space Mono',monospace; font-size:10px; color:#94a3b8; }
+.mo-preview-title { font-size:14px; font-weight:700; color:#0f172a; margin-bottom:10px; }
+.mo-preview-foto { width:100%; max-height:150px; object-fit:cover; border-radius:6px; margin-bottom:8px; }
+.mo-preview-text { font-size:12px; color:#475569; line-height:1.5; }
+
+@media(max-width:600px) {
+    .mvt-flow { flex-direction:column; }
+    .mvt-flow-arrow { transform:rotate(90deg); }
+}
+</style>
+{% endblock %}

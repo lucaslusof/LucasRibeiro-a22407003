@@ -1,0 +1,37 @@
+{% extends 'portfolio/base.html' %}
+{% load grupo_tags %}
+{% block title %}Artigos{% endblock %}
+{% block breadcrumb %}<b>/ artigos</b>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// blog</div>
+        <div class="page-title">Artigos</div>
+    </div>
+    {% if request.user.is_authenticated and request.user|no_grupo:'autores' %}
+        <a href="{% url 'artigo_create' %}" class="btn btn-primary">+ Novo Artigo</a>
+    {% endif %}
+</div>
+
+<div class="card">
+    {% for artigo in artigos %}
+    <div style="padding:20px;border-bottom:1px solid #e2e8f0;">
+        {% if artigo.fotografia %}
+            <img src="{{ artigo.fotografia.url }}" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+        {% endif %}
+        <div class="page-label">{{ artigo.data_criacao|date:"d M Y" }} — {{ artigo.autor.username }}</div>
+        <h3 style="font-size:18px;font-weight:700;color:#0f172a;margin:6px 0;">{{ artigo.titulo }}</h3>
+        <p style="font-size:13px;color:#64748b;">{{ artigo.texto|truncatechars:150 }}</p>
+        <div style="display:flex;gap:10px;margin-top:12px;align-items:center;">
+            <a href="{% url 'artigo_detail' artigo.pk %}" class="btn btn-primary">Ler →</a>
+            <span style="font-size:13px;color:#64748b;">❤️ {{ artigo.likes.count }}</span>
+            {% if request.user == artigo.autor %}
+                <a href="{% url 'artigo_edit' artigo.pk %}" class="btn btn-edit">✎ Editar</a>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty"><span>📝</span>Nenhum artigo publicado ainda.</div>
+    {% endfor %}
+</div>
+{% endblock %}

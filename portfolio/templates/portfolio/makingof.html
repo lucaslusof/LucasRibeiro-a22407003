@@ -1,0 +1,757 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}Making Of{% endblock %}
+{% block nav_makingof %}active{% endblock %}
+{% block breadcrumb %}<b>/ making of</b>{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-label">// diário de bordo</div>
+        <div class="page-title">Making Of</div>
+    </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="mo-index">
+    <div class="mo-index-label">Índice</div>
+    <div class="mo-index-grid">
+        <a href="#conceito" class="mo-index-item">01 — Conceito e Objetivos</a>
+        <a href="#modelacao" class="mo-index-item">02 — Modelação de Dados</a>
+        <a href="#relacoes" class="mo-index-item">03 — Relações entre Entidades</a>
+        <a href="#mvt" class="mo-index-item">04 — Arquitetura MVT</a>
+        <a href="#html" class="mo-index-item">05 — Construção do HTML</a>
+        <a href="#crud" class="mo-index-item">06 — Implementação CRUD</a>
+        <a href="#decisoes" class="mo-index-item">07 — Decisões e Justificações</a>
+        <a href="#erros" class="mo-index-item">08 — Erros e Correções</a>
+        <a href="#ia" class="mo-index-item">09 — Uso de IA</a>
+        <a href="#diario" class="mo-index-item">10 — Diário de Bordo</a>
+    </div>
+</div>
+
+<!-- 01 CONCEITO -->
+<div class="mo-section" id="conceito">
+    <div class="mo-section-num">01</div>
+    <h2 class="mo-section-title">Conceito e Objetivos</h2>
+
+    <p class="mo-text">Esta aplicação é um portfólio académico e pessoal desenvolvido em <strong>Django</strong> no âmbito da unidade curricular de Programação Web. O objetivo principal é reunir, num único espaço web, toda a informação relevante sobre o percurso académico, projetos desenvolvidos, tecnologias aprendidas e competências adquiridas.</p>
+
+    <div class="mo-highlight">
+        <div class="mo-highlight-icon">💡</div>
+        <div>
+            <strong>Porquê um portfólio?</strong><br>
+            Um portfólio digital bem construído é um dos melhores ativos para quem procura emprego na área de tecnologia. Permite demonstrar, com exemplos concretos, o que se sabe fazer — muito mais eficaz do que um simples CV.
+        </div>
+    </div>
+
+    <h3 class="mo-subtitle">Funcionalidades previstas</h3>
+    <div class="mo-checklist">
+        <div class="mo-check done">✓ Listagem de todas as entidades (Licenciaturas, UCs, Docentes, Projetos...)</div>
+        <div class="mo-check done">✓ Operações CRUD para Projetos, Tecnologias, Competências e Formações</div>
+        <div class="mo-check done">✓ Interface visual consistente com sidebar de navegação</div>
+        <div class="mo-check done">✓ Carregamento de dados via API da Lusófona</div>
+        <div class="mo-check done">✓ Carregamento de TFCs via ficheiro JSON</div>
+        <div class="mo-check done">✓ Aplicação Escola integrada</div>
+        <div class="mo-check done">✓ Página Making Of (esta página)</div>
+        <div class="mo-check done">✓ Página Sobre a Aplicação</div>
+    </div>
+</div>
+
+<!-- 02 MODELAÇÃO -->
+<div class="mo-section" id="modelacao">
+    <div class="mo-section-num">02</div>
+    <h2 class="mo-section-title">Modelação de Dados</h2>
+
+    <p class="mo-text">Antes de escrever qualquer linha de código, foi necessário pensar em quais as entidades que a aplicação precisaria de armazenar e que atributos cada uma deveria ter. Este processo é chamado de <strong>modelação</strong> e é feito no papel antes de ser implementado.</p>
+
+    <h3 class="mo-subtitle">Como pensei cada entidade</h3>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">Licenciatura</span>
+            <span class="badge badge-purple">1 registo</span>
+        </div>
+        <p class="mo-text">A entidade mais simples. Representa o curso que estou a frequentar. Decidi incluí-la como modelo separado (em vez de apenas texto) porque permite reutilização e garante consistência — todas as UCs apontam para o mesmo objeto Licenciatura.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>nome</code> CharField — nome completo do curso</div>
+            <div class="mo-attr"><code>sigla</code> CharField — ex: "LEI", aparece nos badges</div>
+            <div class="mo-attr"><code>url_site</code> URLField — link para o site da Lusófona</div>
+            <div class="mo-attr"><code>descricao</code> TextField — descrição livre do curso</div>
+            <div class="mo-attr"><code>imagem</code> ImageField — logótipo ou imagem representativa</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> Usar CharField para nome e sigla em vez de apenas um campo, porque a sigla é usada frequentemente na interface (badges, tabelas) e é mais prático ter já calculada.
+        </div>
+    </div>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">UnidadeCurricular</span>
+            <span class="badge badge-cyan">22 registos</span>
+        </div>
+        <p class="mo-text">Representa cada disciplina do curso. Esta foi a entidade que sofreu mais evoluções ao longo do projeto — começou simples e foi crescendo à medida que se descobriram novos dados disponíveis na API da Lusófona.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>licenciatura</code> ForeignKey → Licenciatura</div>
+            <div class="mo-attr"><code>nome, sigla</code> CharField — identificação da UC</div>
+            <div class="mo-attr"><code>ano, semestre</code> IntegerField — posição no plano curricular</div>
+            <div class="mo-attr"><code>ects</code> IntegerField — créditos europeus (default 6)</div>
+            <div class="mo-attr"><code>course_code, curricular_unit_code</code> CharField — códigos da API Lusófona</div>
+            <div class="mo-attr"><code>objetivos, programa, metodologia</code> TextField — conteúdo académico</div>
+            <div class="mo-attr"><code>bibliografia, avaliacao, apresentacao</code> TextField — da API</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> Adicionei os campos da API (course_code, curricular_unit_code, objetivos, etc.) numa segunda iteração, após explorar os dados disponíveis. Documentei esta evolução no Making Of porque é importante mostrar que a modelação não é estática.
+        </div>
+    </div>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">Docente</span>
+            <span class="badge badge-green">23 registos</span>
+        </div>
+        <p class="mo-text">Representa os professores do curso. A decisão de criar uma entidade separada (em vez de apenas um campo de texto na UC) foi fundamental para poder mostrar a foto e o link para o perfil da Lusófona.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>nome</code> CharField — nome completo</div>
+            <div class="mo-attr"><code>email</code> EmailField — contacto</div>
+            <div class="mo-attr"><code>url_lusofona</code> URLField — perfil na Lusófona</div>
+            <div class="mo-attr"><code>foto</code> ImageField — fotografia do docente</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> Inicialmente tinha um campo <code>departamento</code>, mas depois percebi que a ligação mais útil seria a página do docente na Lusófona. Substituí departamento por <code>foto</code> e <code>url_lusofona</code>. Esta mudança está documentada como um dos primeiros erros de modelação identificados.
+        </div>
+    </div>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">Projeto</span>
+            <span class="badge badge-yellow">2 registos</span>
+        </div>
+        <p class="mo-text">A entidade central do portfólio — representa trabalhos realizados nas UCs. É das mais ricas em atributos porque precisa de mostrar tudo o que é relevante para um futuro empregador.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>uc</code> ForeignKey → UnidadeCurricular</div>
+            <div class="mo-attr"><code>titulo</code> CharField — nome do projeto</div>
+            <div class="mo-attr"><code>descricao</code> TextField — o que faz o projeto</div>
+            <div class="mo-attr"><code>conceitos_aplicados</code> TextField — o que aprendi</div>
+            <div class="mo-attr"><code>imagem</code> ImageField — screenshot ou imagem</div>
+            <div class="mo-attr"><code>link_github</code> URLField — repositório (muito importante!)</div>
+            <div class="mo-attr"><code>video_demo</code> URLField — demonstração em vídeo</div>
+            <div class="mo-attr"><code>tecnologias</code> ManyToManyField → Tecnologia</div>
+            <div class="mo-attr"><code>competencias</code> ManyToManyField → Competencia</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> O campo <code>link_github</code> foi considerado obrigatório desde o início porque é um dos primeiros elementos que um recrutador técnico verifica. A relação com Tecnologia é ManyToMany porque um projeto usa várias tecnologias e a mesma tecnologia aparece em vários projetos.
+        </div>
+    </div>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">Tecnologia</span>
+            <span class="badge badge-cyan">6 registos</span>
+        </div>
+        <p class="mo-text">Lista de tecnologias aprendidas. Inclui linguagens, frameworks, ferramentas e bases de dados. Tem um campo de nível de interesse para poder mostrar o que domino melhor.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>nome</code> CharField — ex: "Python", "Django"</div>
+            <div class="mo-attr"><code>categoria</code> CharField choices — linguagem/framework/ferramenta...</div>
+            <div class="mo-attr"><code>tipo</code> CharField choices — frontend/backend/outros...</div>
+            <div class="mo-attr"><code>descricao</code> TextField — o que faz, o que aprendi</div>
+            <div class="mo-attr"><code>logo</code> ImageField — logótipo oficial</div>
+            <div class="mo-attr"><code>url_site</code> URLField — site oficial</div>
+            <div class="mo-attr"><code>nivel_interesse</code> IntegerField — 1 a 5 estrelas</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> O campo <code>tipo</code> foi adicionado na Ficha 8 para poder agrupar tecnologias por categoria na página Sobre. Sem este campo seria impossível separar Frontend de Backend visualmente.
+        </div>
+    </div>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">TFC</span>
+            <span class="badge badge-yellow">529 registos</span>
+        </div>
+        <p class="mo-text">Trabalhos Finais de Curso de alunos anteriores. Os dados foram carregados a partir de um ficheiro JSON via script Python. É uma entidade de consulta — permite explorar que projetos foram feitos antes e inspirar ideias.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>titulo</code> CharField — título do TFC</div>
+            <div class="mo-attr"><code>resumo</code> TextField — descrição</div>
+            <div class="mo-attr"><code>ano</code> IntegerField — ano de realização</div>
+            <div class="mo-attr"><code>link_documento</code> URLField — link para o documento</div>
+            <div class="mo-attr"><code>destaque</code> BooleanField — marcar os mais interessantes</div>
+            <div class="mo-attr"><code>tecnologias</code> ManyToManyField → Tecnologia</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> O campo <code>destaque</code> permite filtrar os TFCs mais interessantes. Com 529 registos é impossível ver todos — este campo resolve esse problema de UX.
+        </div>
+    </div>
+
+    <div class="mo-entity-block">
+        <div class="mo-entity-header">
+            <span class="mo-entity-name">MakingOf</span>
+            <span class="badge badge-purple">entidade especial</span>
+        </div>
+        <p class="mo-text">Esta entidade é única porque documenta o próprio processo de desenvolvimento. É uma espécie de diário de bordo integrado na aplicação — cada entrada descreve uma decisão, um erro ou uma reflexão sobre o desenvolvimento.</p>
+        <div class="mo-attrs">
+            <div class="mo-attr"><code>titulo</code> CharField — título da entrada</div>
+            <div class="mo-attr"><code>entidade_relacionada</code> CharField choices — qual entidade documenta</div>
+            <div class="mo-attr"><code>descricao</code> TextField — o que foi feito</div>
+            <div class="mo-attr"><code>decisoes</code> TextField — justificações das escolhas</div>
+            <div class="mo-attr"><code>erros_correcoes</code> TextField — bugs e como foram resolvidos</div>
+            <div class="mo-attr"><code>foto_papel</code> ImageField — foto do caderno/papel</div>
+            <div class="mo-attr"><code>uso_ia</code> TextField — como foi usada IA</div>
+            <div class="mo-attr"><code>criado_em</code> DateTimeField — automático</div>
+        </div>
+        <div class="mo-decision">
+            <strong>Decisão:</strong> O campo <code>criado_em</code> usa <code>auto_now_add=True</code>, o que significa que é preenchido automaticamente quando a entrada é criada — não é editável. Isto garante que a cronologia do Making Of é sempre fiável.
+        </div>
+    </div>
+</div>
+
+<!-- 03 RELAÇÕES -->
+<div class="mo-section" id="relacoes">
+    <div class="mo-section-num">03</div>
+    <h2 class="mo-section-title">Relações entre Entidades</h2>
+
+    <p class="mo-text">As relações entre entidades são o coração de uma base de dados relacional. No Django, definem-se diretamente nos modelos usando <code>ForeignKey</code> (1:N) ou <code>ManyToManyField</code> (N:M).</p>
+
+    <h3 class="mo-subtitle">ForeignKey — relação 1 para N</h3>
+    <p class="mo-text">Usada quando <em>um</em> objeto pertence a <em>um único</em> outro objeto, mas esse outro pode ter <em>vários</em>.</p>
+
+    <div class="mo-rel-block">
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">Licenciatura</div>
+            <div class="mo-rel-arrow">──1:N──►</div>
+            <div class="mo-rel-right">UnidadeCurricular</div>
+            <div class="mo-rel-why">Uma licenciatura tem muitas UCs. Cada UC pertence a uma só licenciatura.</div>
+        </div>
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">UnidadeCurricular</div>
+            <div class="mo-rel-arrow">──1:N──►</div>
+            <div class="mo-rel-right">Projeto</div>
+            <div class="mo-rel-why">Um projeto nasce de uma UC. Cada UC pode ter vários projetos.</div>
+        </div>
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">Docente (portfolio)</div>
+            <div class="mo-rel-arrow">──1:N──►</div>
+            <div class="mo-rel-right">Curso (escola)</div>
+            <div class="mo-rel-why">Decisão de reutilizar o modelo Docente da app portfolio na app escola, evitando duplicação de dados.</div>
+        </div>
+    </div>
+
+    <h3 class="mo-subtitle">ManyToMany — relação N para N</h3>
+    <p class="mo-text">Usada quando <em>muitos</em> objetos podem estar relacionados com <em>muitos</em> outros. O Django cria automaticamente uma tabela intermédia na base de dados.</p>
+
+    <div class="mo-rel-block">
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">UnidadeCurricular</div>
+            <div class="mo-rel-arrow">◄──N:M──►</div>
+            <div class="mo-rel-right">Docente</div>
+            <div class="mo-rel-why">Uma UC pode ter vários docentes. Um docente pode lecionar várias UCs.</div>
+        </div>
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">Projeto</div>
+            <div class="mo-rel-arrow">◄──N:M──►</div>
+            <div class="mo-rel-right">Tecnologia</div>
+            <div class="mo-rel-why">Um projeto usa várias tecnologias. Uma tecnologia é usada em vários projetos.</div>
+        </div>
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">Projeto</div>
+            <div class="mo-rel-arrow">◄──N:M──►</div>
+            <div class="mo-rel-right">Competencia</div>
+            <div class="mo-rel-why">Um projeto demonstra várias competências. Uma competência pode aparecer em vários projetos.</div>
+        </div>
+        <div class="mo-rel-row">
+            <div class="mo-rel-left">Curso (escola)</div>
+            <div class="mo-rel-arrow">◄──N:M──►</div>
+            <div class="mo-rel-right">Aluno (escola)</div>
+            <div class="mo-rel-why">Um curso tem vários alunos. Um aluno pode frequentar vários cursos.</div>
+        </div>
+    </div>
+
+    <div class="mo-highlight">
+        <div class="mo-highlight-icon">⚠️</div>
+        <div>
+            <strong>Problema encontrado com ManyToMany e ordem de declaração:</strong><br>
+            Ao definir <code>competencias = ManyToManyField(Competencia)</code> dentro da classe <code>Projeto</code>, o Python deu erro porque <code>Competencia</code> ainda não estava definida naquele ponto do ficheiro. A solução foi usar o nome como string: <code>ManyToManyField('Competencia')</code> — o Django resolve a referência depois de carregar todos os modelos.
+        </div>
+    </div>
+</div>
+
+<!-- 04 MVT -->
+<div class="mo-section" id="mvt">
+    <div class="mo-section-num">04</div>
+    <h2 class="mo-section-title">Arquitetura MVT do Django</h2>
+
+    <p class="mo-text">O Django usa o padrão <strong>MVT (Model-View-Template)</strong>, que é uma variação do clássico MVC. Compreender este padrão foi essencial para organizar o código corretamente.</p>
+
+    <div class="mo-mvt-flow">
+        <div class="mo-mvt-step">
+            <div class="mo-mvt-icon">🌐</div>
+            <div class="mo-mvt-name">Browser</div>
+            <div class="mo-mvt-desc">Faz um GET para /projetos/</div>
+        </div>
+        <div class="mo-mvt-arrow">→</div>
+        <div class="mo-mvt-step">
+            <div class="mo-mvt-icon">🗺️</div>
+            <div class="mo-mvt-name">urls.py</div>
+            <div class="mo-mvt-desc">Mapeia /projetos/ para projetos_list()</div>
+        </div>
+        <div class="mo-mvt-arrow">→</div>
+        <div class="mo-mvt-step mo-mvt-highlight">
+            <div class="mo-mvt-icon">⚙️</div>
+            <div class="mo-mvt-name">View</div>
+            <div class="mo-mvt-desc">Busca Projeto.objects.all() e passa ao template</div>
+        </div>
+        <div class="mo-mvt-arrow">→</div>
+        <div class="mo-mvt-step">
+            <div class="mo-mvt-icon">🗄️</div>
+            <div class="mo-mvt-name">Model</div>
+            <div class="mo-mvt-desc">ORM faz SELECT * FROM projeto</div>
+        </div>
+        <div class="mo-mvt-arrow">→</div>
+        <div class="mo-mvt-step">
+            <div class="mo-mvt-icon">🎨</div>
+            <div class="mo-mvt-name">Template</div>
+            <div class="mo-mvt-desc">projetos_list.html renderiza a lista</div>
+        </div>
+        <div class="mo-mvt-arrow">→</div>
+        <div class="mo-mvt-step">
+            <div class="mo-mvt-icon">📄</div>
+            <div class="mo-mvt-name">HTML</div>
+            <div class="mo-mvt-desc">Página renderizada devolvida ao browser</div>
+        </div>
+    </div>
+
+    <h3 class="mo-subtitle">O que aprendi sobre o MVT</h3>
+    <p class="mo-text">A grande vantagem do MVT é a <strong>separação de responsabilidades</strong>. O Model não sabe nada sobre HTML. O Template não faz queries à base de dados. A View é o único ponto de ligação. Isto torna o código muito mais fácil de manter e de perceber.</p>
+
+    <div class="mo-code-example">
+        <div class="mo-code-label">Exemplo completo — listar projetos</div>
+        <pre><span class="c"># models.py — define os dados</span>
+class Projeto(models.Model):
+    titulo = models.CharField(max_length=150)
+    uc = models.ForeignKey(UnidadeCurricular, on_delete=models.CASCADE)
+    link_github = models.URLField(blank=True)
+
+<span class="c"># views.py — busca os dados e envia ao template</span>
+def projetos_list(request):
+    projetos = Projeto.objects.all()
+    return render(request, 'portfolio/projetos_list.html', {'projetos': projetos})
+
+<span class="c"># urls.py — define a rota</span>
+path('projetos/', views.projetos_list, name='projetos_list'),
+
+<span class="c"># projetos_list.html — apresenta os dados</span>
+{% verbatim %}{% for p in projetos %}
+    &lt;td&gt;{{ p.titulo }}&lt;/td&gt;
+{% endfor %}{% endverbatim %}</pre>
+    </div>
+</div>
+
+<!-- 05 HTML -->
+<div class="mo-section" id="html">
+    <div class="mo-section-num">05</div>
+    <h2 class="mo-section-title">Construção do HTML e Interface</h2>
+
+    <p class="mo-text">A interface foi construída usando apenas HTML e CSS puro — sem frameworks como Bootstrap ou Tailwind. Esta decisão foi intencional para compreender melhor como funciona CSS e ter controlo total sobre o design.</p>
+
+    <h3 class="mo-subtitle">Estratégia de templates</h3>
+    <p class="mo-text">O Django permite <strong>herança de templates</strong> com <code>{% verbatim %}{% extends %}{% endverbatim %}</code> e <code>{% verbatim %}{% block %}{% endverbatim %}</code>. Isto significa que criei um <code>base.html</code> com toda a estrutura comum (sidebar, topbar, CSS) e cada página apenas define o seu conteúdo.</p>
+
+    <div class="mo-code-example">
+        <div class="mo-code-label">base.html — estrutura partilhada</div>
+        <pre>&lt;body&gt;
+  &lt;aside class="sidebar"&gt;
+    &lt;!-- navegação igual em todas as páginas --&gt;
+  &lt;/aside&gt;
+  &lt;div class="main"&gt;
+    &lt;div class="topbar"&gt;{% verbatim %}{% block breadcrumb %}{% endblock %}{% endverbatim %}&lt;/div&gt;
+    &lt;div class="content"&gt;
+      {% verbatim %}{% block content %}{% endblock %}{% endverbatim %}  &lt;!-- conteúdo específico de cada página --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</pre>
+    </div>
+
+    <div class="mo-code-example">
+        <div class="mo-code-label">projetos_list.html — herda de base.html</div>
+        <pre>{% verbatim %}{% extends 'portfolio/base.html' %}
+{% block title %}Projetos{% endblock %}
+{% block content %}
+&lt;!-- apenas o conteúdo desta página --&gt;
+{% endblock %}{% endverbatim %}</pre>
+    </div>
+
+    <h3 class="mo-subtitle">Sistema de Design</h3>
+    <p class="mo-text">Defini variáveis CSS no <code>:root</code> para manter cores e espaçamentos consistentes em toda a aplicação:</p>
+
+    <div class="mo-code-example">
+        <div class="mo-code-label">CSS Variables — paleta de cores</div>
+        <pre>:root {
+    --bg:         #f8fafc;  /* fundo da página */
+    --bg2:        #ffffff;  /* fundo dos cards */
+    --accent:     #0ea5e9;  /* azul principal */
+    --text:       #0f172a;  /* texto escuro */
+    --muted:      #64748b;  /* texto secundário */
+    --sidebar:    #0f172a;  /* sidebar escura */
+    --danger:     #ef4444;  /* vermelho para apagar */
+    --warning:    #f59e0b;  /* amarelo para editar */
+}</pre>
+    </div>
+
+    <div class="mo-highlight">
+        <div class="mo-highlight-icon">🎨</div>
+        <div>
+            <strong>Problema encontrado com texto invisível:</strong><br>
+            Os templates originais foram criados para um tema escuro (fundo preto) com <code>style="color:#fff"</code> no texto. Quando mudei o fundo para branco, o texto ficou invisível. A solução foi correr um script Python que substituiu todos os <code>color:#fff</code> por <code>color:#0f172a</code> nos ficheiros HTML.
+        </div>
+    </div>
+</div>
+
+<!-- 06 CRUD -->
+<div class="mo-section" id="crud">
+    <div class="mo-section-num">06</div>
+    <h2 class="mo-section-title">Implementação CRUD</h2>
+
+    <p class="mo-text">CRUD significa <strong>Create, Read, Update, Delete</strong> — as quatro operações fundamentais sobre dados. Para cada entidade com CRUD, foram criados:</p>
+
+    <div class="mo-checklist">
+        <div class="mo-check done">✓ Uma view de listagem (Read)</div>
+        <div class="mo-check done">✓ Uma view de criação com formulário (Create)</div>
+        <div class="mo-check done">✓ Uma view de edição com formulário (Update)</div>
+        <div class="mo-check done">✓ Uma view de confirmação de apagar (Delete)</div>
+        <div class="mo-check done">✓ Um ModelForm que gera automaticamente os campos</div>
+        <div class="mo-check done">✓ Rotas em urls.py para cada operação</div>
+    </div>
+
+    <h3 class="mo-subtitle">Como funciona um formulário Django</h3>
+
+    <div class="mo-code-example">
+        <div class="mo-code-label">forms.py — ModelForm gerado automaticamente</div>
+        <pre>class ProjetoForm(forms.ModelForm):
+    class Meta:
+        model = Projeto
+        fields = ['titulo', 'uc', 'descricao', 'link_github', 'tecnologias']
+        widgets = {
+            'descricao': forms.Textarea(attrs={'rows': 3}),
+            'tecnologias': forms.CheckboxSelectMultiple(),
+        }</pre>
+    </div>
+
+    <div class="mo-code-example">
+        <div class="mo-code-label">views.py — Create e Update com o mesmo template</div>
+        <pre>def projeto_create(request):
+    form = ProjetoForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save()
+        return redirect('projetos_list')
+    return render(request, 'portfolio/form.html', {'form': form, 'titulo': 'Novo Projeto'})
+
+def projeto_edit(request, pk):
+    obj = get_object_or_404(Projeto, pk=pk)
+    form = ProjetoForm(request.POST or None, request.FILES or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect('projetos_list')
+    return render(request, 'portfolio/form.html', {'form': form, 'titulo': 'Editar Projeto'})</pre>
+    </div>
+
+    <div class="mo-highlight">
+        <div class="mo-highlight-icon">💡</div>
+        <div>
+            <strong>Vantagem do Django Forms:</strong><br>
+            O <code>ModelForm</code> gera automaticamente todos os campos do formulário com base no modelo, incluindo validação. Não precisei de escrever nenhum HTML para os inputs — o Django faz isso com <code>{{ form.as_p }}</code>. Isto poupa imenso tempo e evita erros.
+        </div>
+    </div>
+</div>
+
+<!-- 07 DECISÕES -->
+<div class="mo-section" id="decisoes">
+    <div class="mo-section-num">07</div>
+    <h2 class="mo-section-title">Decisões e Justificações</h2>
+
+    <div class="mo-decision-grid">
+        <div class="mo-dec-card">
+            <div class="mo-dec-title">Porquê Django?</div>
+            <p>Django é um framework "batteries included" — inclui ORM, sistema de templates, admin automático, formulários e autenticação. Para um projeto académico é ideal porque permite focar na lógica em vez de configuração.</p>
+        </div>
+        <div class="mo-dec-card">
+            <div class="mo-dec-title">Porquê SQLite?</div>
+            <p>Para desenvolvimento local, o SQLite é mais que suficiente. Não requer instalação de servidor de base de dados e o ficheiro db.sqlite3 fica no repositório, tornando fácil partilhar o projeto.</p>
+        </div>
+        <div class="mo-dec-card">
+            <div class="mo-dec-title">Porquê CSS puro?</div>
+            <p>Em vez de Bootstrap ou Tailwind, escolhi CSS puro com variáveis para aprender melhor como funciona. Isto deu-me controlo total sobre o design e evitou dependências externas pesadas.</p>
+        </div>
+        <div class="mo-dec-card">
+            <div class="mo-dec-title">Porquê duas apps?</div>
+            <p>Separar <code>portfolio</code> e <code>escola</code> em duas apps Django distintas segue as boas práticas — cada app tem uma responsabilidade clara e pode ser reutilizada noutros projetos.</p>
+        </div>
+        <div class="mo-dec-card">
+            <div class="mo-dec-title">Reutilizar Docente na Escola</div>
+            <p>Em vez de criar um modelo Professor separado na app escola, decidi reutilizar o modelo Docente do portfólio. Assim os docentes das UCs podem ser diretamente professores dos cursos.</p>
+        </div>
+        <div class="mo-dec-card">
+            <div class="mo-dec-title">API da Lusófona</div>
+            <p>Em vez de inserir manualmente as 22 UCs, criei um script Python que usa a API pública da Lusófona para carregar automaticamente os dados. Isto poupa tempo e garante dados corretos.</p>
+        </div>
+    </div>
+</div>
+
+<!-- 08 ERROS -->
+<div class="mo-section" id="erros">
+    <div class="mo-section-num">08</div>
+    <h2 class="mo-section-title">Erros Encontrados e Correções</h2>
+
+    <p class="mo-text">Durante o desenvolvimento foram encontrados vários erros. Documentar estes erros é importante — mostra o processo de aprendizagem e será útil para não repetir os mesmos erros.</p>
+
+    <div class="mo-error-list">
+        <div class="mo-error">
+            <div class="mo-error-header">
+                <span class="mo-error-badge">NameError</span>
+                <span class="mo-error-title">ManyToManyField para classe não declarada</span>
+            </div>
+            <div class="mo-error-body">
+                <div class="mo-error-problem">
+                    <strong>Problema:</strong> <code>competencias = ManyToManyField(Competencia)</code> dentro de Projeto dava NameError porque Competencia ainda não estava definida naquele ponto do ficheiro.
+                </div>
+                <div class="mo-error-fix">
+                    <strong>Solução:</strong> Usar o nome como string: <code>ManyToManyField('Competencia')</code>. O Django resolve as referências depois de carregar todos os modelos.
+                </div>
+            </div>
+        </div>
+
+        <div class="mo-error">
+            <div class="mo-error-header">
+                <span class="mo-error-badge">NameError</span>
+                <span class="mo-error-title">NIVEIS_PROFICIENCIA não definida</span>
+            </div>
+            <div class="mo-error-body">
+                <div class="mo-error-problem">
+                    <strong>Problema:</strong> O campo <code>nivel</code> de Competencia referenciava <code>NIVEIS_PROFICIENCIA</code> que não estava definida em lado nenhum.
+                </div>
+                <div class="mo-error-fix">
+                    <strong>Solução:</strong> Definir <code>NIVEIS = [(i, str(i)) for i in range(1, 6)]</code> dentro da própria classe e usar <code>choices=NIVEIS</code>.
+                </div>
+            </div>
+        </div>
+
+        <div class="mo-error">
+            <div class="mo-error-header">
+                <span class="mo-error-badge">TemplateDoesNotExist</span>
+                <span class="mo-error-title">Templates em pasta errada</span>
+            </div>
+            <div class="mo-error-body">
+                <div class="mo-error-problem">
+                    <strong>Problema:</strong> Os templates estavam em <code>portfolio/templates/</code> mas deveriam estar em <code>portfolio/templates/portfolio/</code>.
+                </div>
+                <div class="mo-error-fix">
+                    <strong>Solução:</strong> Criar a subpasta <code>portfolio/</code> dentro de templates e mover todos os ficheiros HTML para lá com <code>mv portfolio/templates/*.html portfolio/templates/portfolio/</code>.
+                </div>
+            </div>
+        </div>
+
+        <div class="mo-error">
+            <div class="mo-error-header">
+                <span class="mo-error-badge">FieldError</span>
+                <span class="mo-error-title">Campo inexistente no ModelForm</span>
+            </div>
+            <div class="mo-error-body">
+                <div class="mo-error-problem">
+                    <strong>Problema:</strong> O <code>TFCForm</code> tinha <code>destaque</code> nos fields mas o modelo TFC ainda não tinha esse campo.
+                </div>
+                <div class="mo-error-fix">
+                    <strong>Solução:</strong> Ou remover o campo do form, ou adicionar <code>destaque = BooleanField(default=False)</code> ao modelo e migrar.
+                </div>
+            </div>
+        </div>
+
+        <div class="mo-error">
+            <div class="mo-error-header">
+                <span class="mo-error-badge">Typo</span>
+                <span class="mo-error-title">Carácter inválido no settings.py</span>
+            </div>
+            <div class="mo-error-body">
+                <div class="mo-error-problem">
+                    <strong>Problema:</strong> Na linha <code>'portfolio',</code> ficou colado um carácter especial <code>ﬁ</code> (ligadura tipográfica), resultando em <code>'portfolio',ﬁ</code>.
+                </div>
+                <div class="mo-error-fix">
+                    <strong>Solução:</strong> Abrir o settings.py e remover manualmente o carácter invisível no final da linha.
+                </div>
+            </div>
+        </div>
+
+        <div class="mo-error">
+            <div class="mo-error-header">
+                <span class="mo-error-badge">ImportError</span>
+                <span class="mo-error-title">portfolioescola juntos</span>
+            </div>
+            <div class="mo-error-body">
+                <div class="mo-error-problem">
+                    <strong>Problema:</strong> No INSTALLED_APPS faltava vírgula entre 'portfolio' e 'escola', resultando em <code>ModuleNotFoundError: No module named 'portfolioescola'</code>.
+                </div>
+                <div class="mo-error-fix">
+                    <strong>Solução:</strong> Adicionar vírgula: <code>'portfolio',</code> e <code>'escola',</code> em linhas separadas.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 09 IA -->
+<div class="mo-section" id="ia">
+    <div class="mo-section-num">09</div>
+    <h2 class="mo-section-title">Uso de Inteligência Artificial</h2>
+
+    <p class="mo-text">Ao longo do desenvolvimento foi usado o <strong>Claude (claude.ai)</strong> como ferramenta de apoio. O uso foi transparente e está documentado aqui conforme pedido pelo enunciado.</p>
+
+    <div class="mo-ia-grid">
+        <div class="mo-ia-card mo-ia-yes">
+            <h4>✓ Como foi usado</h4>
+            <ul>
+                <li>Correção de erros de sintaxe Python</li>
+                <li>Sugestão de atributos para cada modelo</li>
+                <li>Geração dos templates HTML com o design pedido</li>
+                <li>Correção de bugs (NameError, FieldError, etc.)</li>
+                <li>Explicação de conceitos (ManyToMany, select_related, etc.)</li>
+                <li>Script de substituição de cores nos templates</li>
+            </ul>
+        </div>
+        <div class="mo-ia-card mo-ia-no">
+            <h4>✗ O que NÃO foi feito pela IA</h4>
+            <ul>
+                <li>As decisões finais de modelação foram sempre minhas</li>
+                <li>A escolha de quais atributos manter ou remover</li>
+                <li>A inserção de dados no admin</li>
+                <li>A compreensão do funcionamento do código</li>
+                <li>Os apontamentos e reflexões do Making Of</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mo-highlight" style="margin-top:20px;">
+        <div class="mo-highlight-icon">🤖</div>
+        <div>
+            <strong>Reflexão sobre o uso de IA:</strong><br>
+            A IA foi útil para acelerar tarefas repetitivas (criar vários templates com o mesmo padrão) e para diagnosticar erros rapidamente. No entanto, verificou-se que nem sempre o código gerado estava correto — por exemplo, o TFCForm incluía campos que não existiam no modelo. É essencial compreender o código para poder identificar e corrigir estes erros.
+        </div>
+    </div>
+</div>
+
+<!-- 10 DIÁRIO -->
+<div class="mo-section" id="diario">
+    <div class="mo-section-num">10</div>
+    <h2 class="mo-section-title">Diário de Bordo</h2>
+
+    <p class="mo-text">Entradas registadas ao longo do desenvolvimento:</p>
+
+    {% if makingofs %}
+    {% for m in makingofs %}
+    <div class="mo-diary-entry">
+        <div class="mo-diary-header">
+            <span class="badge badge-cyan">{{ m.get_entidade_relacionada_display }}</span>
+            <span class="mo-diary-title">{{ m.titulo }}</span>
+            <span class="mo-date">{{ m.criado_em|date:"d M Y" }}</span>
+        </div>
+        {% if m.foto_papel %}
+            <img src="{{ m.foto_papel.url }}" alt="Apontamentos em papel" style="max-width:100%;max-height:250px;object-fit:contain;border-radius:8px;border:1px solid #e2e8f0;margin:12px 0;display:block;">
+        {% endif %}
+        {% if m.descricao %}<p class="mo-diary-text">{{ m.descricao }}</p>{% endif %}
+        {% if m.decisoes %}
+        <div class="mo-diary-block blue">
+            <strong>Decisões:</strong> {{ m.decisoes }}
+        </div>
+        {% endif %}
+        {% if m.erros_correcoes %}
+        <div class="mo-diary-block orange">
+            <strong>Erros e correções:</strong> {{ m.erros_correcoes }}
+        </div>
+        {% endif %}
+        {% if m.uso_ia %}
+        <div class="mo-diary-block purple">
+            <strong>Uso de IA:</strong> {{ m.uso_ia }}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty" style="padding:40px;text-align:center;">
+        <span style="font-size:30px;display:block;margin-bottom:10px;">📓</span>
+        <p>Adiciona entradas no <a href="/admin/portfolio/makingof/add/" class="link-accent">admin → Making Of</a></p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.mo-index { background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:20px 24px; margin-bottom:40px; }
+.mo-index-label { font-family:'Space Mono',monospace; font-size:9px; color:#0284c7; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+.mo-index-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; }
+.mo-index-item { color:#0284c7; text-decoration:none; font-size:13px; font-family:'Space Mono',monospace; padding:4px 0; }
+.mo-index-item:hover { color:#0ea5e9; }
+.mo-section { margin-bottom:52px; padding-bottom:44px; border-bottom:1px solid #e2e8f0; }
+.mo-section:last-child { border-bottom:none; }
+.mo-section-num { font-family:'Space Mono',monospace; font-size:10px; color:#0ea5e9; letter-spacing:3px; margin-bottom:4px; }
+.mo-section-title { font-size:22px; font-weight:700; color:#0f172a; margin-bottom:14px; }
+.mo-subtitle { font-size:15px; font-weight:600; color:#1e293b; margin:20px 0 10px; }
+.mo-text { font-size:14px; color:#374151; line-height:1.7; margin-bottom:14px; }
+.mo-text strong { color:#0f172a; }
+.mo-highlight { background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:16px 18px; margin:16px 0; display:flex; gap:12px; font-size:13px; color:#374151; line-height:1.6; }
+.mo-highlight-icon { font-size:20px; flex-shrink:0; }
+.mo-checklist { display:flex; flex-direction:column; gap:6px; margin:14px 0; }
+.mo-check { font-size:13px; color:#374151; padding:6px 10px; border-radius:6px; }
+.mo-check.done { background:#f0fdf4; color:#166534; }
+.mo-entity-block { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:20px; margin-bottom:16px; }
+.mo-entity-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.mo-entity-name { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:#0284c7; }
+.mo-attrs { margin:12px 0; display:flex; flex-direction:column; gap:4px; }
+.mo-attr { font-family:'Space Mono',monospace; font-size:11px; color:#475569; padding:4px 8px; background:#f8fafc; border-radius:4px; }
+.mo-attr code { color:#0284c7; font-weight:700; }
+.mo-decision { background:#fef9c3; border-left:3px solid #f59e0b; border-radius:0 6px 6px 0; padding:10px 14px; font-size:13px; color:#374151; margin-top:12px; }
+.mo-rel-block { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.mo-rel-row { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 16px; display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.mo-rel-left,.mo-rel-right { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#0284c7; }
+.mo-rel-arrow { font-family:'Space Mono',monospace; font-size:12px; color:#94a3b8; }
+.mo-rel-why { font-size:12px; color:#64748b; flex:1; min-width:200px; }
+.mo-mvt-flow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:20px 0; }
+.mo-mvt-step { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; text-align:center; min-width:90px; }
+.mo-mvt-highlight { background:#eff6ff; border-color:#bfdbfe; }
+.mo-mvt-icon { font-size:22px; margin-bottom:4px; }
+.mo-mvt-name { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:#0f172a; margin-bottom:4px; }
+.mo-mvt-desc { font-size:10px; color:#64748b; line-height:1.3; }
+.mo-mvt-arrow { color:#94a3b8; font-size:18px; }
+.mo-code-example { background:#0f172a; border-radius:8px; padding:16px 20px; margin:16px 0; }
+.mo-code-label { font-family:'Space Mono',monospace; font-size:9px; color:#0ea5e9; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+.mo-code-example pre { font-family:'Space Mono',monospace; font-size:12px; color:#e2e8f0; line-height:1.8; white-space:pre-wrap; }
+.mo-code-example pre .c { color:#64748b; }
+.mo-decision-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin:16px 0; }
+.mo-dec-card { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:16px; }
+.mo-dec-title { font-size:13px; font-weight:700; color:#0284c7; margin-bottom:8px; font-family:'Space Mono',monospace; }
+.mo-dec-card p { font-size:12px; color:#374151; line-height:1.5; }
+.mo-error-list { display:flex; flex-direction:column; gap:14px; }
+.mo-error { background:#fff; border:1px solid #fecaca; border-radius:8px; overflow:hidden; }
+.mo-error-header { background:#fef2f2; padding:10px 16px; display:flex; align-items:center; gap:10px; }
+.mo-error-badge { background:#ef4444; color:#fff; padding:2px 8px; border-radius:4px; font-size:10px; font-family:'Space Mono',monospace; font-weight:700; }
+.mo-error-title { font-size:13px; font-weight:600; color:#0f172a; }
+.mo-error-body { padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
+.mo-error-problem { font-size:12px; color:#374151; }
+.mo-error-fix { font-size:12px; color:#166534; background:#f0fdf4; padding:8px 10px; border-radius:4px; }
+.mo-error-problem code, .mo-error-fix code { background:#f1f5f9; padding:1px 5px; border-radius:3px; font-family:'Space Mono',monospace; font-size:11px; }
+.mo-ia-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0; }
+.mo-ia-card { border-radius:8px; padding:16px; }
+.mo-ia-yes { background:#f0fdf4; border:1px solid #a7f3d0; }
+.mo-ia-no { background:#fff7ed; border:1px solid #fed7aa; }
+.mo-ia-card h4 { font-size:13px; font-weight:700; margin-bottom:10px; color:#0f172a; }
+.mo-ia-card ul { list-style:none; display:flex; flex-direction:column; gap:4px; }
+.mo-ia-card ul li { font-size:12px; color:#374151; padding-left:12px; position:relative; }
+.mo-ia-card ul li::before { content:'·'; position:absolute; left:0; color:#94a3b8; }
+.mo-diary-entry { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:20px; margin-bottom:16px; }
+.mo-diary-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+.mo-diary-title { font-size:15px; font-weight:700; color:#0f172a; flex:1; }
+.mo-date { font-family:'Space Mono',monospace; font-size:10px; color:#94a3b8; }
+.mo-diary-text { font-size:13px; color:#374151; line-height:1.6; margin-bottom:10px; }
+.mo-diary-block { padding:10px 14px; border-radius:6px; font-size:12px; color:#374151; margin-top:8px; line-height:1.5; }
+.mo-diary-block.blue { background:#eff6ff; border-left:3px solid #0ea5e9; }
+.mo-diary-block.orange { background:#fffbeb; border-left:3px solid #f59e0b; }
+.mo-diary-block.purple { background:#f5f3ff; border-left:3px solid #8b5cf6; }
+@media (max-width: 600px) {
+    .mo-ia-grid { grid-template-columns:1fr; }
+    .mo-mvt-flow { flex-direction:column; }
+}
+</style>
+{% endblock %}
